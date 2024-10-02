@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Tasks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #7b73ad;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #0066cc;
+        }
+        a.add-task {
+            display: inline-block;
+            background-color: #0056b3;
+            color: #ffffff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        a.add-task:hover {
+            background-color: #003d82;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background-color: #eee;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            position: relative;
+        }
+        ul li:last-child {
+            margin-bottom: 0;
+        }
+        .task-action {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        .task-action a {
+            padding: 5px 10px;
+            background-color: #f44336;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .task-action a.edit {
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+    <div class="container">
+        <h2>Your Tasks</h2>
+        <a href="{% url 'add_task' %}" class="add-task">Add New Task</a>
+        {% if tasks %}
+            <ul>
+                {% for task in tasks %}
+                    <li>
+                        {{ task.title }} - {{ task.description }} - {{ task.date|date:"Y-m-d" }}
+                        <div class="task-action">
+                            {% if task.id %}
+                                <form action="{% url 'delete_task' task.id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" onclick="return confirm('Are you sure?');">Delete</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No tasks added yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
